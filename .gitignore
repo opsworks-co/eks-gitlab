@@ -1,0 +1,21 @@
+# IDE
+.idea
+
+.tool-versions
+
+# Terraform
+.terraform
+*.tfstate
+*.tfstate.backup
+*.lock.hcl
+
+# Terragrunt
+.terragrunt-cache
+
+# OS X
+.history
+.DS_Store
+.vscode/extensions.json
+
+# Secrets
+secrets.yaml

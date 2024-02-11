@@ -1,0 +1,216 @@
+global:
+  edition: ce
+
+  nodeSelector:
+    provisioner: "gitlab"
+
+  hosts:
+    domain: ${domain}
+
+  ingress:
+    configureCertmanager: true
+    class: nginx
+    annotations:
+      kubernetes.io/tls-acme: "true"
+
+  minio:
+    enabled: false
+
+  kas:
+    enabled: false
+
+  psql:
+    password:
+      useSecret: true
+      secret: gitlab-postgresql-password
+      key: postgresql-password
+    host: ${database_host}
+    port: ${database_port}
+    username: ${database_username}
+    database: gitlab
+
+  redis:
+    host: ${redis_host}
+    port: ${redis_port}
+    auth:
+      enabled: true
+      secret: ${release_name}-redis-password
+      key: secret
+    scheme: rediss
+
+  appConfig:
+    object_store:
+      enabled: true
+      proxy_download: true
+      connection:
+        secret: ${release_name}-rails-storage
+    lfs:
+      enabled: true
+      proxy_download: true
+      bucket: ${bucket_prefix}-lfs
+
+    artifacts:
+      enabled: true
+      proxy_download: true
+      bucket: ${bucket_prefix}-artifacts
+
+    uploads:
+      enabled: true
+      proxy_download: true
+      bucket: ${bucket_prefix}-uploads
+
+    packages:
+      enabled: true
+      proxy_download: true
+      bucket: ${bucket_prefix}-packages
+
+    backups:
+      bucket: ${bucket_prefix}-backup-storage
+      tmpBucket: ${bucket_prefix}-backup-tmp-storage
+
+    externalDiffs:
+      enabled: true
+      when:
+      proxy_download: true
+      bucket: ${bucket_prefix}-mr-diffs
+
+    terraformState:
+      enabled: true
+      bucket: ${bucket_prefix}-terraform-state
+
+    ciSecureFiles:
+      enabled: true
+      bucket: ${bucket_prefix}-ci-secure-files
+      connection:
+        secret: ${release_name}-rails-storage
+
+    dependencyProxy:
+      enabled: true
+      proxy_download: true
+      bucket: ${bucket_prefix}-dependency-proxy
+
+    omniauth:
+      enabled: true
+      allowSingleSignOn: [saml]
+      blockAutoCreatedUsers: false
+      syncProfileFromProvider: ['saml']
+      autoLinkLdapUser: true
+      autoLinkSamlUser: false
+      syncProfileAttributes: ['firstName', 'lastName', 'mail', 'phone', 'image']
+
+      autoSignInWithProvider:
+      autoLinkUser: []
+      externalProviders: []
+      allowBypassTwoFactor: []
+      providers:
+        - secret: gitlab-omniauth-saml
+
+    ## https://docs.gitlab.com/charts/charts/globals#cron-jobs-related-settings
+    cron_jobs:
+      # Flag stuck CI builds as failed
+      stuck_ci_jobs_worker:
+        cron: "0 * * * *"
+      # Schedule pipelines in the near future
+      pipeline_schedule_worker:
+        cron: "19 * * * *"
+      # Remove expired build artifacts
+      expire_build_artifacts_worker:
+        cron: "*/7 * * * *"
+      # Periodically run 'git fsck' on all repositories.
+      repository_check_worker:
+        cron: "20 * * * *"
+      # Send admin emails once a week
+      admin_email_worker:
+        cron: "0 0 * * 0"
+      # Remove outdated repository archives
+      repository_archive_cache_worker:
+        cron: "0 * * * *"
+      # Verify custom GitLab Pages domains
+      pages_domain_verification_cron_worker:
+        cron: "*/15 * * * *"
+      schedule_migrate_external_diffs_worker:
+        cron: "15 * * * *"
+      # Prune stale group runners on opted-in namespaces
+      ci_runners_stale_group_runners_prune_worker_cron:
+        cron: "30 * * * *"
+      # Periodically update ci_runner_versions table with up-to-date versions and status
+      ci_runner_versions_reconciliation_worker:
+        cron: "@daily"
+      # Periodically clean up stale ci_runner_machines records
+      ci_runners_stale_machines_cleanup_worker:
+        cron: "36 * * * *"
+
+  time_zone: 'Europe/Kiev'
+
+  smtp:
+    enabled: true
+    address: ${smtp_address}
+    port: 1025
+    password:
+      secret: "${release_name}-smtp-password"
+      key: password
+    domain: ${domain}
+    authentication: "false"
+
+  email:
+    from: 'support@${domain}'
+    display_name: 'Gitlab Support'
+    reply_to: 'support@${domain}'
+
+certmanager-issuer:
+  email: "support@${domain}"
+
+gitlab:
+  toolbox:
+    backups:
+      objectStorage:
+        config:
+          secret: "${release_name}-rails-storage"
+      cron:
+        enabled: true
+        schedule: "0 0 * * *"
+  gitlab-shell:
+    maxUnavailable: 1
+    minReplicas: 1
+    maxReplicas: 10
+  webservice:
+    maxUnavailable: 1
+    minReplicas: 1
+    maxReplicas: 10
+    ingress:
+      tls:
+        secretName: ${release_name}-gitlab-tls
+#  gitaly:
+#    persistence:
+#      size: 30Gi
+
+registry:
+  enabled: false
+
+certmanager:
+  install: false
+
+nginx-ingress:
+  enabled: false
+
+redis:
+  install: false
+
+postgresql:
+  install: false
+
+gitlab-runner:
+  install: true
+  nodeSelector:
+    provisioner: "gitlab"
+  runners:
+    privileged: true
+    tags: "gitlab"
+    config: |
+      [[ runners ]]
+        [ runners.kubernetes ]
+        image = "ubuntu:22.04"
+        memory_request = "2Gi"
+        [runners.kubernetes.node_selector]
+          "kubernetes.io/arch" = "amd64"
+          "provisioner" = "gitlab"
