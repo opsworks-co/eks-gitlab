@@ -7,15 +7,25 @@ locals {
     k => v.secret
   }
 
-  buckets_tmp = {
+  buckets_app = {
     for k, v in local.app_config :
     k => v
     if k == "lfs" || k == "artifacts" || k == "packages" || k == "uploads" || k == "externalDiffs" || k == "terraformState" || k == "ciSecureFiles" || k == "dependencyProxy"
   }
 
+  registry = {
+    for k, v in local.values :
+    k => v
+    if k == "registry"
+  }
+
   buckets_list = merge(
     {
-      for k, v in local.buckets_tmp :
+      for k, v in local.buckets_app :
+      k => v.bucket if v.enabled == true
+    },
+    {
+      for k, v in local.registry :
       k => v.bucket if v.enabled == true
     },
     {
