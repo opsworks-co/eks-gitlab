@@ -185,7 +185,14 @@ gitlab:
 #      size: 30Gi
 
 registry:
-  enabled: false
+  enabled: true
+  bucket: ${bucket_prefix}-registry
+  redis:
+    cache:
+      password:
+        useSecret: true
+        secret: ${release_name}-redis-password
+        key: secret
 
 certmanager:
   install: false
