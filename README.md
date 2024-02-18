@@ -22,16 +22,15 @@
 
 ## Modules
 
-No modules.
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_gitlab_role"></a> [gitlab\_role](#module\_gitlab\_role) | terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc | v5.34.0 |
+| <a name="module_s3_bucket"></a> [s3\_bucket](#module\_s3\_bucket) | terraform-aws-modules/s3-bucket/aws | 4.1.0 |
 
 ## Resources
 
 | Name | Type |
 |------|------|
-| [aws_s3_bucket.gitlab](https://registry.terraform.io/providers/hashicorp/aws/5.36.0/docs/resources/s3_bucket) | resource |
-| [aws_s3_bucket_acl.gitlab](https://registry.terraform.io/providers/hashicorp/aws/5.36.0/docs/resources/s3_bucket_acl) | resource |
-| [aws_s3_bucket_ownership_controls.gitlab](https://registry.terraform.io/providers/hashicorp/aws/5.36.0/docs/resources/s3_bucket_ownership_controls) | resource |
-| [aws_s3_bucket_public_access_block.gitlab](https://registry.terraform.io/providers/hashicorp/aws/5.36.0/docs/resources/s3_bucket_public_access_block) | resource |
 | [helm_release.gitlab](https://registry.terraform.io/providers/hashicorp/helm/2.11.0/docs/resources/release) | resource |
 | [kubernetes_namespace.gitlab](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace) | resource |
 | [kubernetes_secret.gitlab_omniauth_providers](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/secret) | resource |
@@ -40,6 +39,7 @@ No modules.
 | [kubernetes_secret.redis](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/secret) | resource |
 | [kubernetes_secret.smtp](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/secret) | resource |
 | [aws_eks_cluster.eks](https://registry.terraform.io/providers/hashicorp/aws/5.36.0/docs/data-sources/eks_cluster) | data source |
+| [aws_iam_policy_document.s3_bucket_policy](https://registry.terraform.io/providers/hashicorp/aws/5.36.0/docs/data-sources/iam_policy_document) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/5.36.0/docs/data-sources/region) | data source |
 
 ## Inputs

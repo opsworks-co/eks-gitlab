@@ -200,6 +200,9 @@ certmanager:
 nginx-ingress:
   enabled: false
 
+prometheus:
+  install: false
+
 redis:
   install: false
 

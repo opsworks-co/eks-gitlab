@@ -1,4 +1,14 @@
-# examples
+# Documentation
+
+## Description and Architecture
+
+This module was created to simplify deploying Gitlab into the EKS with storage on AWS S3, AWS Aurora for PostreSQL, and AWS ElastiCache Redis.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/opsworks-co/eks-gitlab/master/.github/images/diagram.svg" alt="Architectural diagram" width="100%">
+</p>
+
+In the above diagram, you can see the components and their relations (PostgreSQL and Redis are not deployed with this module).
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
