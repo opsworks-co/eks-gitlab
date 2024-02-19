@@ -161,26 +161,6 @@ resource "helm_release" "gitlab" {
     value = module.gitlab_role.iam_role_arn
   }
 
-  # set {
-  #   name  = "registry.annotations.iam\\.amazonaws\\.com/role"
-  #   value = module.gitlab_role.iam_role_arn
-  # }
-
-  # set {
-  #   name  = "gitlab.sidekiq.annotations.iam\\.amazonaws\\.com/role"
-  #   value = module.gitlab_role.iam_role_arn
-  # }
-
-  # set {
-  #   name  = "gitlab.webservice.annotations.iam\\.amazonaws\\.com/role"
-  #   value = module.gitlab_role.iam_role_arn
-  # }
-
-  # set {
-  #   name  = "gitlab.toolbox.annotations.iam\\.amazonaws\\.com/role"
-  #   value = module.gitlab_role.iam_role_arn
-  # }
-
   depends_on = [
     kubernetes_secret.postgres,
     kubernetes_secret.redis,
