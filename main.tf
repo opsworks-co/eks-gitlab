@@ -90,39 +90,56 @@ resource "kubernetes_secret" "gitlab_omniauth_providers" {
   type = "Opaque"
 }
 
-resource "aws_s3_bucket" "gitlab" {
+data "aws_iam_policy_document" "s3_bucket_policy" {
   for_each = local.buckets_list
 
-  bucket = each.value
-  tags   = var.tags
-}
+  statement {
+    sid    = "AllowListForGitlabRole"
+    effect = "Allow"
+    principals {
+      type        = "AWS"
+      identifiers = [module.gitlab_role.iam_role_arn]
+    }
+    actions   = ["s3:ListBucket"]
+    resources = ["arn:aws:s3:::${each.value}"]
+  }
 
-resource "aws_s3_bucket_ownership_controls" "gitlab" {
-  for_each = local.buckets_list
-  bucket   = aws_s3_bucket.gitlab[each.key].id
-  rule {
-    object_ownership = "ObjectWriter"
+  statement {
+    sid    = "AllowGetPutForGitlabRole"
+    effect = "Allow"
+    principals {
+      type        = "AWS"
+      identifiers = [module.gitlab_role.iam_role_arn]
+    }
+    actions   = ["s3:PutObject", "s3:GetObject"]
+    resources = ["arn:aws:s3:::${each.value}/*"]
   }
 }
 
-resource "aws_s3_bucket_acl" "gitlab" {
-  for_each   = local.buckets_list
-  depends_on = [aws_s3_bucket_ownership_controls.gitlab]
-
-  bucket = aws_s3_bucket.gitlab[each.key].id
-  acl    = "private"
-}
-
-resource "aws_s3_bucket_public_access_block" "gitlab" {
+module "s3_bucket" {
   for_each = local.buckets_list
-  bucket   = aws_s3_bucket.gitlab[each.key].id
+  source   = "terraform-aws-modules/s3-bucket/aws"
+  version  = "4.1.0"
 
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
+  bucket        = each.value
+  acl           = null
+  force_destroy = false
+
+  versioning = {
+    enabled = false
+  }
+
+  policy        = data.aws_iam_policy_document.s3_bucket_policy[each.key].json
+  attach_policy = true
+
+  attach_deny_insecure_transport_policy = true
+  block_public_acls                     = true
+  block_public_policy                   = true
+  ignore_public_acls                    = true
+  restrict_public_buckets               = true
+
+  tags = var.tags
 }
-
 
 resource "helm_release" "gitlab" {
   namespace        = local.release_namespace
@@ -139,9 +156,27 @@ resource "helm_release" "gitlab" {
     value = var.smtp_user
   }
 
+  set {
+    name  = "global.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+    value = module.gitlab_role.iam_role_arn
+  }
+
   depends_on = [
     kubernetes_secret.postgres,
     kubernetes_secret.redis,
-    kubernetes_secret.gitlab_rails_storage
+    kubernetes_secret.gitlab_rails_storage,
+    module.gitlab_role
   ]
+}
+
+module "gitlab_role" {
+  source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
+  version                       = "v5.34.0"
+  create_role                   = true
+  allow_self_assume_role        = false
+  role_description              = "Gitlab Role to access S3"
+  role_name                     = "${var.release_name}-access-s3"
+  provider_url                  = data.aws_eks_cluster.eks.identity[0].oidc[0].issuer
+  oidc_fully_qualified_subjects = ["system:serviceaccount:${local.release_namespace}:gitlab"]
+  tags                          = var.tags
 }

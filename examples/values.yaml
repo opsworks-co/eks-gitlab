@@ -157,6 +157,10 @@ global:
     display_name: 'Gitlab Support'
     reply_to: 'support@${domain}'
 
+  serviceAccount:
+    enabled: true
+    create: true
+
 certmanager-issuer:
   email: "support@${domain}"
 
@@ -199,6 +203,9 @@ certmanager:
 
 nginx-ingress:
   enabled: false
+
+prometheus:
+  install: false
 
 redis:
   install: false
