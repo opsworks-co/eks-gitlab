@@ -90,6 +90,20 @@ resource "kubernetes_secret" "gitlab_omniauth_providers" {
   type = "Opaque"
 }
 
+resource "kubernetes_secret" "ldap" {
+  count = lookup(local.values.global.appConfig, "ldap", []) == [] ? 0 : 1
+  metadata {
+    name      = "${var.release_name}-ldap-password"
+    namespace = local.release_namespace
+  }
+
+  data = {
+    secret = var.ldap-password
+  }
+
+  type = "Opaque"
+}
+
 data "aws_iam_policy_document" "s3_bucket_policy" {
   for_each = local.buckets_list
 
@@ -145,11 +159,12 @@ resource "helm_release" "gitlab" {
   namespace        = local.release_namespace
   create_namespace = true
 
-  name       = var.release_name
-  repository = "https://charts.gitlab.io/"
-  chart      = "gitlab"
-  version    = var.gitlab_chart_version
-  values     = var.values
+  name        = var.release_name
+  repository  = "https://charts.gitlab.io/"
+  chart       = "gitlab"
+  max_history = var.release_max_history
+  version     = var.gitlab_chart_version
+  values      = var.values
 
   set {
     name  = "global.smtp.user_name"
