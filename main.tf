@@ -98,7 +98,7 @@ resource "kubernetes_secret" "ldap" {
   }
 
   data = {
-    secret = var.ldap-password
+    secret = var.ldap_password
   }
 
   type = "Opaque"

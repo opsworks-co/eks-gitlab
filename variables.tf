@@ -64,7 +64,7 @@ variable "omniauth_providers" {
   default     = {}
 }
 
-variable "ldap-password" {
+variable "ldap_password" {
   description = "LDAP password"
   type        = string
   default     = ""
