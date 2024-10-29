@@ -58,6 +58,12 @@ variable "omniauth_providers" {
   default     = {}
 }
 
+variable "ldap-password" {
+  description = "LDAP password"
+  type        = string
+  default     = ""
+}
+
 variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)
