@@ -159,11 +159,12 @@ resource "helm_release" "gitlab" {
   namespace        = local.release_namespace
   create_namespace = true
 
-  name       = var.release_name
-  repository = "https://charts.gitlab.io/"
-  chart      = "gitlab"
-  version    = var.gitlab_chart_version
-  values     = var.values
+  name        = var.release_name
+  repository  = "https://charts.gitlab.io/"
+  chart       = "gitlab"
+  max_history = var.release_max_history
+  version     = var.gitlab_chart_version
+  values      = var.values
 
   set {
     name  = "global.smtp.user_name"
