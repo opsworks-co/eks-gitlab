@@ -4,6 +4,12 @@ variable "release_name" {
   default     = "gitlab"
 }
 
+variable "release_max_history" {
+  description = "Maximum saved revisions per release"
+  type        = number
+  default     = 10
+}
+
 variable "release_namespace" {
   description = "Namespace name where you want to deploy the release. If empty, `release_name` will be used."
   type        = string
@@ -56,6 +62,12 @@ variable "omniauth_providers" {
   description = "OmniAuth providers"
   type        = map(string)
   default     = {}
+}
+
+variable "ldap_password" {
+  description = "LDAP password"
+  type        = string
+  default     = ""
 }
 
 variable "tags" {
