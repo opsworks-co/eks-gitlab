@@ -31,6 +31,38 @@ module "gitlab" {
     "gitlab-omniauth-saml" = local.saml_google_provider
   }
 
+  buckets_lifecycles = {
+    artifacts = <<EOF
+{
+  "lifecycle_rule": [
+    {
+      "id": "log",
+      "enabled": true,
+      "expiration": {
+        "days": 30
+      }
+    }
+  ]
+}
+EOF
+    uploads   = <<EOF
+{
+  "lifecycle_rule": [
+    {
+      "id": "log",
+      "enabled": true,
+      "noncurrent_version_transition": [
+        {
+          "days": 30,
+          "storage_class": "STANDARD_IA"
+        }
+      ]
+    }
+  ]
+}
+EOF
+  }
+
   values = [
     templatefile("values.yaml", {
       database_host     = "gitlab.xxxxxxxxxxxx.eu-central-1.rds.amazonaws.com"
