@@ -163,6 +163,8 @@ module "s3_bucket" {
   ignore_public_acls                    = true
   restrict_public_buckets               = true
 
+  lifecycle_rule = try(local.filtered_buckets_lifecycles[each.key].lifecycle_rule, [])
+
   tags = var.tags
 }
 

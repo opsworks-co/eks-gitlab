@@ -33,4 +33,12 @@ locals {
       backup_tmp : local.values.global.appConfig.backups.tmpBucket
     }
   )
+
+  # Ensure `buckets_lifecycles` is a map and filter out empty configurations
+  buckets_lifecycles_map = try(jsondecode(var.buckets_lifecycles), {})
+
+  filtered_buckets_lifecycles = {
+    for bucket, config in local.buckets_lifecycles_map :
+    bucket => config if length(try(config.lifecycle_rule, [])) > 0
+  }
 }
