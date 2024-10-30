@@ -34,11 +34,13 @@ locals {
     }
   )
 
-  # Ensure `buckets_lifecycles` is a map and filter out empty configurations
-  buckets_lifecycles_map = try(jsondecode(var.buckets_lifecycles), {})
+  decoded_buckets_lifecycles = { for bucket, config in var.buckets_lifecycles :
+    bucket => jsondecode(config)
+  }
 
+  # Filter only buckets with a non-empty lifecycle_rule
   filtered_buckets_lifecycles = {
-    for bucket, config in local.buckets_lifecycles_map :
+    for bucket, config in local.decoded_buckets_lifecycles :
     bucket => config if length(try(config.lifecycle_rule, [])) > 0
   }
 }

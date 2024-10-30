@@ -57,7 +57,7 @@ In the above diagram, you can see the components and their relations (PostgreSQL
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_buckets_lifecycles"></a> [buckets\_lifecycles](#input\_buckets\_lifecycles) | Lifecycle rules for buckets | `map(any)` | `{}` | no |
+| <a name="input_buckets_lifecycles"></a> [buckets\_lifecycles](#input\_buckets\_lifecycles) | Lifecycle rules for buckets | `map(string)` | `{}` | no |
 | <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | EKS cluster name where you want to deploy the release | `string` | n/a | yes |
 | <a name="input_database_password"></a> [database\_password](#input\_database\_password) | Password to access PostgreSQL database | `string` | n/a | yes |
 | <a name="input_gitlab_chart_version"></a> [gitlab\_chart\_version](#input\_gitlab\_chart\_version) | Version of the gitlab chart | `string` | `"7.8.1"` | no |

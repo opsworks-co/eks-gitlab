@@ -72,7 +72,7 @@ variable "ldap_password" {
 
 variable "buckets_lifecycles" {
   description = "Lifecycle rules for buckets"
-  type        = map(any)
+  type        = map(string)
   default     = {}
 }
 
