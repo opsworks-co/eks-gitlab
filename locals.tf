@@ -33,4 +33,14 @@ locals {
       backup_tmp : local.values.global.appConfig.backups.tmpBucket
     }
   )
+
+  decoded_buckets_lifecycles = { for bucket, config in var.buckets_lifecycles :
+    bucket => jsondecode(config)
+  }
+
+  # Filter only buckets with a non-empty lifecycle_rule
+  filtered_buckets_lifecycles = {
+    for bucket, config in local.decoded_buckets_lifecycles :
+    bucket => config if length(try(config.lifecycle_rule, [])) > 0
+  }
 }
