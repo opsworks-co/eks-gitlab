@@ -141,6 +141,17 @@ data "aws_iam_policy_document" "s3_bucket_policy" {
   }
 
   statement {
+    sid    = "AllowPutObjectAclForGitlabRole"
+    effect = "Allow"
+    principals {
+      type        = "AWS"
+      identifiers = [module.gitlab_role.iam_role_arn]
+    }
+    actions   = ["s3:PutObjectAcl"]
+    resources = ["arn:aws:s3:::${each.value}/*"]
+  }
+
+  statement {
     sid    = "AllowGetObjectAclForGitlabRole"
     effect = "Allow"
     principals {
