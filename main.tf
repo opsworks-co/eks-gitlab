@@ -6,7 +6,8 @@ data "aws_region" "current" {}
 
 resource "kubernetes_namespace" "gitlab" {
   metadata {
-    name = local.release_namespace
+    name   = local.release_namespace
+    labels = var.namespace_labels
   }
 }
 

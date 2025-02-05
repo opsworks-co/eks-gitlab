@@ -70,6 +70,12 @@ variable "ldap_password" {
   default     = ""
 }
 
+variable "namespace_labels" {
+  description = "Labels for GitLab namespace"
+  type        = map(string)
+  default     = {}
+}
+
 variable "buckets_lifecycles" {
   description = "Lifecycle rules for buckets"
   type        = map(string)
