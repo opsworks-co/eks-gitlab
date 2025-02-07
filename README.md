@@ -62,6 +62,7 @@ In the above diagram, you can see the components and their relations (PostgreSQL
 | <a name="input_database_password"></a> [database\_password](#input\_database\_password) | Password to access PostgreSQL database | `string` | n/a | yes |
 | <a name="input_gitlab_chart_version"></a> [gitlab\_chart\_version](#input\_gitlab\_chart\_version) | Version of the gitlab chart | `string` | `"7.8.1"` | no |
 | <a name="input_ldap_password"></a> [ldap\_password](#input\_ldap\_password) | LDAP password | `string` | `""` | no |
+| <a name="input_namespace_labels"></a> [namespace\_labels](#input\_namespace\_labels) | Labels for GitLab namespace | `map(string)` | `{}` | no |
 | <a name="input_omniauth_providers"></a> [omniauth\_providers](#input\_omniauth\_providers) | OmniAuth providers | `map(string)` | `{}` | no |
 | <a name="input_redis_password"></a> [redis\_password](#input\_redis\_password) | Password to access Redis database | `string` | n/a | yes |
 | <a name="input_release_max_history"></a> [release\_max\_history](#input\_release\_max\_history) | Maximum saved revisions per release | `number` | `10` | no |
