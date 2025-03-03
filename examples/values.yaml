@@ -173,7 +173,7 @@ gitlab:
       cron:
         enabled: true
         schedule: "0 0 * * *"
-        extraArgs: "--skip artifacts" # Each component must have its own --skip argument: https://docs.gitlab.com/charts/backup-restore/backup/#skipping-components ; https://docs.gitlab.com/administration/backup_restore/backup_gitlab/?tab=Helm+chart+%28Kubernetes%29
+        extraArgs: "--skip artifacts" # Optional. Each component must have its own --skip argument: https://docs.gitlab.com/charts/backup-restore/backup/#skipping-components ; https://docs.gitlab.com/administration/backup_restore/backup_gitlab/?tab=Helm+chart+%28Kubernetes%29
   gitlab-shell:
     maxUnavailable: 1
     minReplicas: 1
