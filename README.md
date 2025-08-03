@@ -1,5 +1,7 @@
 # Documentation
 
+## This repository is discontinued, further work at https://github.com/Perun-Engineering/eks-gitlab
+
 ## Description and Architecture
 
 This module was created to simplify deploying Gitlab into the EKS with storage on AWS S3, AWS Aurora for PostreSQL, and AWS ElastiCache Redis.
